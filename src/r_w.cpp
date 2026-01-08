@@ -1,4 +1,4 @@
-#include "static.h"
+#include "config.h"
 
 FILE *room_file;
 
