@@ -12,6 +12,11 @@
 int makefile(FILE *room_file);
 //int readfile(FILE *room_file, struct room, struct box, struct object);
 int readfile(FILE *room_file);
+int get_first_line(char *line, char *name, FILE *room_file, char STARTER);
+int get_sep_spacing(int *len1, int *len2, char *line, int MAX_LEN);
+int get_number(int *len1, int *len2, char *line);
+int get_new_line(char *line, FILE *room_file);
+int insert_corners(char *line, FILE *room_file, float *corners, char format, char *dimention, int max_size);
 
 struct room{
   char name[64] = "";
