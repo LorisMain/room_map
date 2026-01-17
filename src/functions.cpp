@@ -72,8 +72,20 @@ int readfile(FILE *room_file){
 
     //gets the first box line and also sets the name of the box
     if(get_first_line(line, box_p.name, room_file, BOX_STARTER) < 0)
-      return -2;
-    printf("%s:", box_p.name);
+      return -22;
+    printf("%s:\n", box_p.name);
+
+    if(get_sep_spacing(&len1, &len2, line, 4, SEPERATOR) < 0)
+      return -32;
+
+    box_p.box_number = get_number(&len1, &len2, line);
+    if(room_p.room_number < 0)
+      return -41;
+
+    box_p.box_format = line[len2 + 1];
+
+    if(master_switch(box_p.box_format, line, room_file, &box_p.height, (float*)box_p.corners) < 0)
+      return -51;
 
     end = 1;
 
@@ -129,8 +141,6 @@ int get_new_line(char *line, FILE *room_file){
 
 int insert_corners(char *line, FILE *room_file, float *corners, char format, char *dimention, int max_size){
 
-  get_new_line(line, room_file);
-
   if (max_size < 0)
     max_size = -1 * (max_size * MAX_SEARCH);
 
@@ -162,11 +172,16 @@ int insert_corners(char *line, FILE *room_file, float *corners, char format, cha
     //printf("%s\n", dimention);
     //printf("%d, %d", t_len[0], t_len[1]);
 
-    printf("%f\n", *(&corners[0] + 3 * i));
-    printf("%f\n", *((&corners[0] + 3 * i) + 1));
-    printf("%f\n", *((&corners[0] + 3 * i) + 2));
+    printf("x:%f\n", *(&corners[0] + 3 * i));
+    printf("y:%f\n", *((&corners[0] + 3 * i) + 1));
+    printf("z:%f\n", *((&corners[0] + 3 * i) + 2));
+    printf("\n");
 
     get_new_line(line, room_file);
+
+    if(line[1] == format)
+      return 1;
+
   }
   return 0;
 }
@@ -179,42 +194,34 @@ int master_switch(char format, char *line, FILE *room_file, float *height, float
 
       get_new_line(line, room_file);
 
-      for(int i = 0; line[0] == format; i++){
-        if (line[1] == format) {
+      if(insert_corners(line, room_file, corners, '+', dimention, -1) < 0)
+        return -5;
 
-          for(int j = 2; j < sizeof(line) - 2; j++)
-            dimention[j - 2] = line[j];
+      //getting the height
+      if (line[1] == format) {
+        for(int j = 2; j < sizeof(line) - 2; j++)
+          dimention[j - 2] = line[j];
 
-          sscanf(dimention, "%f", height);
-
-          i--;
-
-          get_new_line(line, room_file);
-
-          continue;
-          //printf("%f\n", dimention);
-        }
-
-        if (i > 128)
-          return -5;
-
-        for(int j = 1; j < sizeof(line) - 1; j++)
-          dimention[j - 1] = line[j];
-
-        sscanf(dimention, "%f", &corners[0]);
-
-        printf("%f\n", corners[0]);
+        sscanf(dimention, "%f", height);
 
         get_new_line(line, room_file);
+
+        printf("height:%f\n\n", *height);
       }
+
+      if(insert_corners(line, room_file, corners, '+', dimention, -1) < 0)
+        return -5;
+
       break;
 
     case '-': //for handling just dimentions input
+      get_new_line(line, room_file);
       if(insert_corners(line, room_file, corners, '-', dimention, -1) < 0)
         return -5;
       break;
 
     case '/': //for handling size input
+      get_new_line(line, room_file);
       if(insert_corners(line, room_file, corners, '/', dimention, 1) < 0)
         return -5;
       break;
