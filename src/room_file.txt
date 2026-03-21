@@ -1,33 +1,40 @@
-@test_1234_+
-++1.23
+#test_+
+:master box
+<0<0<0
+++1.24
 +1.24+3.4+5.6
 +2.2+4.4+4.6
-#test-box_102_-
+>test_
+:test object
+<0<0<0
+{
+#test-box1_-
 :first box ever!
 <0.7<0.5<0.8
 -0.4-0.5-0.1
 -1.2-2.3-2.4
-#test-box_102_-
+#test-box2_-
 :second box ever!
 <0.7<0.5<0.8
 -0.4-0.5-0.1
 -1.2-2.3-2.4
->test-object_35_/
+>test-object35_
 :testobjectnumber35
 <0.1<0.2<0.3
 {
-#inner-box_1_-
+#inner-box1_-
 :test_inner_box
 <0.1<0.5<0.7
 -0.1-0.2-0.12
 -0.4-0.3-0.43
->test-inner-object_1_
+>test-inner-object1_
 :test inner object nummer 1
 <0<0<0
 }
-#test-box_102_-
+#test-box3_-
 :first box ever!
 <0.7<0.5<0.8
 -0.4-0.5-0.1
 -1.2-2.3-2.4
+}
 ;
