@@ -332,7 +332,7 @@ void new_box(box* current){
   }
 
 
-  printf(YELLOW "Start entering corners (max 127, when done set x-coordinate to -1): " RESET);
+  printf(YELLOW "Start entering corners (max 127, when done set x-coordinate to -1):\n" RESET);
   int i;
   float temp_float;
   for (i = 0; i < 128; i++){
