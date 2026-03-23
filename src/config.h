@@ -15,10 +15,7 @@
 #define OBJECT_STARTER '>'
 #define SEPERATOR '_'
 
-#define FILE_NAME "room_file.txt"
-#define TEST_FILE "test_file.txt"
-
-#define HELP_TEXT "Commands:\n-d: (delete) {>d_[box/object_name]} will delete current room\n-h: (help) prints this text\n-l: (list){>lx} will list just names, if x == a it will list atributes of box/object given after \"_\", if x == s it will list all boxes and objects under current one\n-m: (move){>mx_[box_name]} will move current position to the specefied box, if x == b it will move back\n-n: (new){nx} will create new box, or object if x == o, inside current box\n-s: (search){s_[text]} will search thrugh all the boxes underneath and return boxes and objects with [text] in the beginning of their name\n"
+#define HELP_TEXT "Commands:\n-d: (delete) {>d_[box/object_name]} will delete current room\n-f: (file) open file that is specefied after\n-h: (help) prints this text\n-l: (list){>lx} will list just names, if x == a it will list atributes of box/object given after \"_\", if x == s it will list all boxes and objects under current one\n-m: (move){>mx_[box_name]} will move current position to the specefied box, if x == b it will move back\n-n: (new){nx} will create new box, or object if x == o, inside current box\n-s: (search){s_[text]} will search thrugh all the boxes underneath and return boxes and objects with [text] in the beginning of their name\n"
 #define STARTER_TEMPLATE "#master_/\n:master\n<0.0<0.0<0.0\n/0/0/0\n;"
 
 struct box{

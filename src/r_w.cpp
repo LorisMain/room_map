@@ -166,13 +166,9 @@ int master_switch(char switcher, char *line, FILE *room_file, struct box *curren
       int i;
       for(i = 1; i < LINE_SIZE && line[i] != SEPERATOR; i++)
         current_b->name[i - 1] = line[i];
+      current_b->box_format = line[i + 1];
       }
 
-      {
-      int i;
-      for(int i = 0; i < LINE_SIZE && line[i] != SEPERATOR; i++)
-      current_b->box_format = line[i + 2];
-      }
 
       get_new_line(line, room_file);
       get_description(line, room_file, current_b->description);
@@ -218,13 +214,10 @@ int master_switch(char switcher, char *line, FILE *room_file, struct box *curren
       int i;
       for(i = 1; i < LINE_SIZE && line[i] != SEPERATOR; i++)
         current_b->name[i - 1] = line[i];
+
+      current_b->box_format = line[i + 1];
       }
 
-      {
-      int i;
-      for(int i = 0; i < LINE_SIZE && line[i] != SEPERATOR; i++)
-        current_b->box_format = line[i + 1];
-      }
 
       get_new_line(line, room_file);
       get_description(line, room_file, current_b->description);
