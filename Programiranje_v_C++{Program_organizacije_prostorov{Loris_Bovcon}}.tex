@@ -1,0 +1,211 @@
+\documentclass[12pt, a4paper, notitlepage]{article}
+\usepackage[utf8]{inputenc}
+
+%math
+\usepackage{amsmath, amssymb, amsthm}
+
+%graphics
+\usepackage{graphicx, float}
+\graphicspath{{images/}}
+
+%customisation
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm, heightrounded]{geometry}
+\usepackage{ragged2e}
+\renewcommand{\baselinestretch}{1.15}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\renewcommand{\figurename}{Slika}
+
+\usepackage[backend=biber,style=numeric]{biblatex}
+\addbibresource{Viri.bib}
+
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+
+\fancyhead[L]{PROGRAMIRANJE C++}
+\fancyhead[C]{Program organizacije prostorov}
+\fancyhead[R]{\textit{ \nouppercase{\leftmark}}}
+\fancyfoot[C]{\thepage}
+
+\fancypagestyle{plain}{ %
+  \fancyhf{} % remove everything
+  \renewcommand{\headrulewidth}{0pt} % remove lines as well
+  \renewcommand{\footrulewidth}{0pt}
+}
+
+\usepackage{datetime}
+
+%%%%%%%%%%%%%%%
+%% BEGINNING %%
+%%%%%%%%%%%%%%%
+
+\setcounter{page}{0}
+\author{Loris Bovcon}
+\begin{document}
+
+  \begin{titlepage}
+
+    \flushleft
+    Škofijska gimnazija Vipava\\
+    Goriška cesta 29\\
+    5271 Vipava
+    \vspace{1cm}
+
+    \begin{center}
+      \large
+      Seminarska naloga pri predmetu informatika\\
+      \rule{\textwidth}{1pt}
+      \vspace{0cm}
+
+      \Huge
+      \textbf{
+        PROGRAMIRANJE V C++\\
+      }
+      \Large
+      \vspace{0.5cm}
+      Program organizacije prostorov
+    \end{center}
+
+    \flushright
+    \vfill
+    Avtor: Loris Bovcon 4.b\\Mentor: Bogdan Urdih, prof.
+    \vspace{1cm}
+    \center
+    Ajdovščina, \the\day.\the\month.\the\year
+
+  \end{titlepage}
+
+  \newpage
+  \section{Povzetek}
+  
+  \newpage
+  \tableofcontents
+  \newpage
+
+%%%%%%%%%%%%%%%%
+%%% CONTENTS %%%
+%%%%%%%%%%%%%%%%
+
+  \justifying
+  \section{Uvod}
+  \subsection{Cilji}
+  Cilji seminarske naloge so bili sledeči:
+  \begin{enumerate}
+    \item narediti program, ki bi mi pomagal organizirati sobo in najti stvari, če pozabim kje so,
+    \item utrditi predhodnje znanje c++ in pridobiti nova znanja na področju programiranja z kazalniki
+    \item 
+  \end{enumerate}
+    \subsection{Uporabljena orodja}
+    \begin{enumerate}
+      \item nvim
+      \item gcc in kasneje mingw
+      \item spletni odpravljevalec napak (ang. debuger)%\cite{debuger} 
+    \end{enumerate}
+      \subsubsection{nvim}
+      \subsubsection{gcc in mingw}
+      \subsubsection{online gdb}
+  \section{Programiranje}
+    \subsection{Obrazložitev programa}
+    Za lažjo delo sem program razdelil na tako imenovano ``glavno datoteko'', datoteko ``main'' in 3 dodatne datoteke z različnimi funkcijami. V nadaljevanju bom obrazložil delovanje programa najprej z vidika datoteke ``main'', kar predstavlja površinski pogled v delovanje programa, kasneje pa še vsako od funkcij iz vsake datoteke posebej.
+      \subsubsection{config.h}
+      datoteka ``config.h'' je ``glavna dototeka'', ki se uporablja za konsistenco definicij med različnimi datotekami\cite{cpplang}.\\ ``Glavno datoteko'' sem uporabil v naslednje namene:
+      \begin{enumerate}
+        \item definicija konstant, kot so: barve, ``razločevalci'' in daljša besedila,
+        \item globalna definicija funkcij, ki jim v drugih datotekah priredim kodo, 
+        \item globalna definicija struktur ``škatle'' in ``predmeta''.
+      \end{enumerate}
+      \subsubsection{main.cpp}
+      Datoteka ``main'' je glavna datoteka, v kateri so definirane globalne spremenljivke, ki se uporabljajo čez celoten program. Dodatno v datoteki ``main'' živi tudi glavna, istoimenska funkcija, iz katere se kličejo vse nadaljne in, ki program zaključi. Poleg glavne funkcije pa se v tej datoteki nahaja še funkcija ``action\_switch'', ki na podlagi uporabniškega vnosa požene pravo funkcijo za nadaljevanje programa in izvedbo želenega ukaza.
+
+      Program se iz vidika datoteke ``main'' izvaja po sledečem vrstnem redu:\\
+      \begin{enumerate}
+        \item dodeljen je spomin za globalne spremenljivke
+        \item začne se funkcija ``main''
+        \item program uporabnika vpraša za vnos ukaza, ki je le prva vpisana črka, iz seznama:
+          \begin{itemize}
+            \item d za ``delete'' ozeroma izbriši
+            \item f za ``file'', ki uporabnika povpraša po imenu datoteke za odprtje
+            \item h za ``help'' ozeroma pomoč, ki izpiše seznam ukazov in definicije
+            \item l za ``list'' ozeroma naštej, ki, v primeru da je druga črka `a' izpiše atribute podanega predmeta ali škatle, v primeru da je druga črka `s' našteje vse predmete in škatle znotraj ali ob trenutni škatli, ter v primeru da druga črka ni nič od naštetega izpiše vse škatle in predmete v trenutni škatli
+            \item m za ``move'' ozeroma premakni, ki spremeni trenutno škatlo v tisto podano po 3. mestu uporabniškega vhoda, kjer je ukaz ``mb'' rezerviran za premik nazaj v prejšnjo škatlo
+            \item n za ``new'' ozeroma nov, ki v trenutni škatli, če je drugi znak vhoda `o' ustvari nov predmet, če pa ne pa novo škatlo
+            \item s za ``search'', ki po trenutni škatli išče in izpiše predmete ali škatle z imenom ki se začne na niz podan po 2. znaku ukaza.
+          \end{itemize}
+        \item uporabnik izbere datoteko(drugega, razen izhoda, ne more, saj ni naložena še nobena datoteka)
+        \item datoteka se prebere in v spomin se naložijo škatle in predmeti
+        \item uporabnik lahko zdaj dodaja nove, jih birše, išče... 
+        \item ko je uporabnik zadovoljen samo izvede ukaz `q', ki škatle in predmete shrani na isto datoteko, pri čemer izbriše prejšnje podatke, in program se zaključi
+      \end{enumerate}
+      \subsubsection{r\_w.cpp}
+      Datoteka ``r\_w'' vsebuje funkcije za delo z datotekami in sicer:
+      \begin{itemize}
+        \item ``makefile'', ki prejme ime in preveri, da datoteka s tem imenom obstaja, če ne, jo naredi in vanjo vpiše osnovno strukturo datoteke
+        \item ``writefile'', ki v predhodno odprto datoteko vpiše strukturo s pomočjo funkcije ``all\_box\_to\_file''
+        \item ``readfile'', ki požene branje datoteke s pomočjo funkcije ``master\_switch''
+        \item ``obj\_to\_file'' in ``box\_to\_file'', ki v datoteko vpišesta po en predmet in škatlo
+        \item ``all\_box\_to\_file'', ki z uporabo prejšnjih dveh funkcij v datoteko zapiše vse povezane škatle in predmete
+        \item ``print\_obj'' in ``print\_box'', ki izpišesta lastnosti predmeta in škatle
+        \item ``print\_all\_box'', ki izpiše vse povezane škatle in predmete na standardni izhod
+        \item ``get\_description'', ki iz vrstice z opisom predmeta ali škatle izlušči opis
+        \item ``get\_sep\_spacing'', ki na podana naslova zapiše število znakov do dveh zaporednih pojavitev podanega znaka v vrstici
+        \item ``get\_new\_line'', ki na naslov vrstice prepiše novo vrstico iz datoteke in izbriše staro
+        \item ``insert\_corners'', ki na naslov ``ogljišč'' iz datoteke vpiše tri ``float-e'' (števila z vejico)
+        \item ``master\_switch'', ki na podlagi prvega znaka v vrstici nadzira katere funkcije se bodo izvedle, s čimer omogoči, da se preberejo različne strukture
+      \end{itemize}
+      \subsubsection{ui.cpp}
+      datoteka ``ui'' vsebuje funkcije povezane z uporabniškim umesnikom in ukazi, ki jih uporabnik lahko izvede. Funkcije so sledeče:
+      \begin{itemize}
+        \item ``delete\_box'', ki izbriše podano škatlo, njene predmete in vse njene podškatle
+        \item ``delete\_with\_name'', ki na podlagi imena podanega poleg ukaza `d' izbriše škatlo, ozeroma, če ta ninajdena, predmet, s podanim imenom
+        \item ``pritn\_path\_b'', ki rekurzivno izpiše pot do, s kazalnikom, podane škatle
+        \item ``print\_path\_o'', ki izpiše pot do predmeta pri čemer uporabi prejšnjo funkcijo za zapis poti škatel
+        \item ``print\_searched\_under'', ki na podlagi imen izpiše poti do vseh predmetov in škatel, katerih ime se začne z podanim nizom znakov
+        \item ``print\_stats\_o'' in ``print\_stats\_b'', ki izpišeta atribute predmeta in škatle
+        \item ``print\_atributes'', ki s pomočjo prejšnjih dveh funkcij izpiše atribute predmeta ali škatle z podanim imenom
+        \item ``print\_names'', ki izpiše imena predmetov in škatel v trenutni škatli
+        \item ``new\_object'' in ``new\_box'', ki uporabnika povprašata po podatkih in iz njih ustvarita nov predmet ali novo škatlo v trenunti
+      \end{itemize}
+      \subsubsection{linked\_funstions.cpp}
+
+    \subsection{Potek programiranja}
+      \subsubsection{Težave med programiranjem}
+  \section{Možne izboljšave}
+  \subsection{Kratkoročne}
+  \subsection{Dolgoročne}
+  \section{Zaključek}
+  \newpage
+  \section{Viri}
+  \printbibliography[heading=none]
+
+\end{document}
+
+
+
+  %test text
+  %\subsection{math}
+  %test inline $F=ma$
+
+  %test $\sum F = F_a + F_b$
+
+  %\begin{equation}
+  %W_p = \frac{1}{2} k s^2
+  %\end{equation}
+  %\newpage
+
+
+
+  %\subsection{aj dont now}
+
+
+
+  %\begin{figure}[H]
+  %  \centering
+  %  \includegraphics[width=10cm]{test_img.png}
+  %  \caption{test}
+  %  \label{fih:my_label}
+  %\end{figure}
