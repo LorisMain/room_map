@@ -146,12 +146,28 @@ struct obj{
       Z uporabo struktur je tako olajšano nastavljanje spremenljivk, saj imajo te točno določeno ime v povezavi z starševsko strukturo. Poleg tega pa strukture omogočajo še njihovo uporabo v vezanih seznamih (\ref{vezani_seznam}).
     \subsection{Vezani seznam (ang. linked list)} \label{vezani_seznam}
     Vezani seznam ozeroma \textit{linked list} v angleščini je struktura za shranjevanje elementov in posledično podatkov na ne-končen način, saj lahko elemente nizamo dokler računalniku ne zmanjka prostora na spominu\cite{linked_list}. Spomin je elementom dodeljen sproti, kar pomeni, da lahko elemente in ustvarjamo po želji, čeprav to pomeni, da je delo z takim seznamom nekoliko težje zaradi kela z kazalniki.\\
-    Primer uporabe vezanega seznama bi biu sledeč:
+    Primer uporabe vezanega seznama bi bila denimo naslednja funkcija:
     \begin{verbatim}
-
+obj *put_object_in_box(struct box *current){
+  if (current == NULL) {
+    return NULL;
+  }
+  if (current->first == NULL) {
+    current->first = new obj();
+    current->first->prev = current;
+    return current->first;
+  }
+  obj *temp = current->first;
+  while (temp->next != NULL) {
+    temp = temp->next;
+  }
+  temp->next = new obj();
+  temp->next->prev = current;
+  return temp->next;
+}
     \end{verbatim}
+    , ki začetni škatli ``first'' na mesto zadnjega predmeta pripne novega.
   \section{Programiranje}
-
     \subsection{Obrazložitev programa}
     Za lažjo delo sem program razdelil na tako imenovano ``glavno datoteko'', datoteko ``main'' in 3 dodatne datoteke z različnimi funkcijami. V nadaljevanju bom obrazložil delovanje programa najprej z vidika datoteke ``main'', kar predstavlja površinski pogled v delovanje programa, kasneje pa še vsako od funkcij iz vsake datoteke posebej.
       \subsubsection{config.h}
@@ -244,7 +260,14 @@ struct obj{
   \end{itemize}
   \subsection{Izboljšava učinkovitosti}
   Program nedvomno ni brezhibno napisan, kar pa pomeni tudi da časovna in prostorska učinkovitost nista optimalni. To sicer ni tako problematično, saj je program napisan v C++, ki je sam po sebi hiter, vendar pa to ne pomeni, da tu ni prostora za izboljšave.
+  \section{Primerjava}
+  Proti koncu seminarske naloge bi rad ispostavil še nekaj programov, ki so v nekolikšnji meri podobni mojemu; in sicer:
+  \begin{itemize}
+    \item Upravljalnik datotek\\ Ti so v principu zelo podobni mojemu programu, saj podobno kot moj program temeljijo na ``škatlah'' ozeroma mapah in ``predmetih'' ozeroma datotekah. Ta podobnost je v resnici zelo velika, le da je moj program bolj osredotočen na pomen predmetov in škatel (njihov opis, lokacijo v prejšnji škatli...), kot navaden upravljalnik datotek.
+    \item Programi 3D modeliranja\\ Tej vrsti programov moj na prvi pogled ni ravno podoben, vendar pa lahko podobnost zaznamo v strukturi predmetov, saj imajo ti kordinate, škatle pa imajo poleg lokacije še velikost in ogljišča. Tudi v prihodnosti razvoja programa bi se le-ta pomikal bolj proti programu 3D modeliranja, še posebno z uvedbo grafike.
+  \end{itemize}
   \section{Zaključek}
+  Skupno vidimo, da smo izpolnili zadana cilja, predvsem drugega v povezavi z učenje programskega jezika, programiranja in programskih struktur, kot so strukture in vezani listi. Program je funkcionalen, vendar je v njem še veliko prostora za izboljšave, ki sem jih bom motivirano lotil.
   \newpage
   \section{Viri}
   \printbibliography[heading=none]
