@@ -82,6 +82,7 @@
 
   \newpage
   \section{Povzetek}
+  V življenju se pogosto znajdemo v neredu. Pogosto se zgodi, da vemo da nekaj imamo, vendar ne vemo kje, kar je še posebno zagonetno v situacijah ko se nam mudi. V ta namen sem napisal program, ki hitro in učinkovito pomaga najti izgubljene predmete, ki so bili predhodno shranjeni.
   
   \newpage
   \tableofcontents
@@ -92,24 +93,65 @@
 %%%%%%%%%%%%%%%%
 
   \justifying
+  
+  %\begin{verbatim}
+  %\end{verbatim}
   \section{Uvod}
-  \subsection{Cilji}
-  Cilji seminarske naloge so bili sledeči:
+    \subsection{Teme}
+  Seminarska naloga zadeva naslednje teme:
   \begin{enumerate}
-    \item narediti program, ki bi mi pomagal organizirati sobo in najti stvari, če pozabim kje so,
-    \item utrditi predhodnje znanje c++ in pridobiti nova znanja na področju programiranja z kazalniki
-    \item 
+    \item Teoretični del z nekatirimi uporabljenimi strukturami
+    \item Delovanje programa na površinskem in tudi v globjem pogledu
+    \item Potek programiranja in težave, ki sem jih srečal na poti
+  \end{enumerate}
+  \subsection{Cilji}
+  Glavna cilja seminarske naloge sta sledeča:
+  \begin{enumerate}
+    \item narediti program, ki bi mi pomagal organizirati sobo in najti stvari, če pozabim kje so
+    \item utrditi predhodnje znanje c++ in pridobiti nova znanja na področju programiranja z kazalniki in vezanimi seznami
   \end{enumerate}
     \subsection{Uporabljena orodja}
-    \begin{enumerate}
-      \item nvim
-      \item gcc in kasneje mingw
-      \item spletni odpravljevalec napak (ang. debuger)%\cite{debuger} 
-    \end{enumerate}
+    Za dosego zastavljenih ciljev sem pri programiranju uporabil naslednja orodja:
       \subsubsection{nvim}
+      nvim ali neovim je preprost urejevalnik besedil, ki je zaradi svoje preprostosti razpoložlivejši za razširitve. V pomoč pri pisanju kode mi je bila razširitev \textit{Conquer of Completion}\cite{coc}, ki avtomatsko dopolnjuje fraze določenega programskega jezika. Je torej samodejni ``dokončevalec'' (ang. autocomplete).
       \subsubsection{gcc in mingw}
-      \subsubsection{online gdb}
+      \textit{gcc} ali \textit{GNU compiler collection}\cite{gcc} in \textit{mingw}\cite{mingw} sta prevajalna programa, ki iz C/C++ človeško-razumljive kode program pretvorita v računalniku-razumljivo strojno kodo. Večino časa sem za sprotno prevajanje in preverjanje uporabljel gcc, saj je po mojem mnenju najboljša izbira za GNU/Linux operacijski sistem. Proti koncu izdelovanja programa sem program prevedel še v strojno kodo namenjeno za operacijski sistem Windows z \textit{mingw}, da je s tem program dostopnejši.
+      \subsubsection{spletna orodja}
+      Med programiranjem sem uporabil tudi številna spletna orodja, kot denimo:
+      \begin{itemize}
+        \item \textit{OnlineGDB}\cite{onlinegdb}, ki mi je služil kot pomoč pri iskanju težav pri zagonetnejših proglemih
+        \item \textit{claude}\cite{claude}, ki je umetna inteligenca s posebnim fokusom na programiranje. Pomagal mi je pri problemih prezahtevnih celo za \textit{OnlineGDB}, sicer ni nobenega problema (razen enega z klicom ``break'') rešil sam,vendar pa me je nekajkrat usmeril v provo smer.
+      \end{itemize}
+  \section{Naprednejši uporabljeni elementi}
+    \subsection{Strukture}
+      Trda definicija strukture, kot je najdena v knjigi \textit{The C++ Programming Language}\cite{cpplang} je sledeča: Struktura je sekvenca elementov (članov) poljubnega podatkovnega tipa. To nam ne pove prav veliko, zato si poglejmo praktični primer.\\
+      Med programiranjem sem med drugim upeljal tudi strukturo predmeta ``obj'':
+      \begin{verbatim}
+struct obj{
+  char name[64] = "";
+  char description[127] = "";
+  float location[3] = { 0 };
+  struct obj* next = NULL;
+  struct box* prev = NULL;
+};
+      \end{verbatim}
+      Struktura predmeta je tako struktura sestavljena iz elementov:
+      \begin{itemize}
+        \item niz znakov dolžine 64 ``name'',
+        \item niz znakov dolžine 127 ``description'',
+        \item niz števil z vejico dolžine 127 ``location'',
+        \item kazalnik na naslednjo strukturo predmeta,
+        \item kazalnik na prejšnjo škatlo
+      \end{itemize}
+      Z uporabo struktur je tako olajšano nastavljanje spremenljivk, saj imajo te točno določeno ime v povezavi z starševsko strukturo. Poleg tega pa strukture omogočajo še njihovo uporabo v vezanih seznamih (\ref{vezani_seznam}).
+    \subsection{Vezani seznam (ang. linked list)} \label{vezani_seznam}
+    Vezani seznam ozeroma \textit{linked list} v angleščini je struktura za shranjevanje elementov in posledično podatkov na ne-končen način, saj lahko elemente nizamo dokler računalniku ne zmanjka prostora na spominu\cite{linked_list}. Spomin je elementom dodeljen sproti, kar pomeni, da lahko elemente in ustvarjamo po želji, čeprav to pomeni, da je delo z takim seznamom nekoliko težje zaradi kela z kazalniki.\\
+    Primer uporabe vezanega seznama bi biu sledeč:
+    \begin{verbatim}
+
+    \end{verbatim}
   \section{Programiranje}
+
     \subsection{Obrazložitev programa}
     Za lažjo delo sem program razdelil na tako imenovano ``glavno datoteko'', datoteko ``main'' in 3 dodatne datoteke z različnimi funkcijami. V nadaljevanju bom obrazložil delovanje programa najprej z vidika datoteke ``main'', kar predstavlja površinski pogled v delovanje programa, kasneje pa še vsako od funkcij iz vsake datoteke posebej.
       \subsubsection{config.h}
@@ -171,12 +213,37 @@
         \item ``new\_object'' in ``new\_box'', ki uporabnika povprašata po podatkih in iz njih ustvarita nov predmet ali novo škatlo v trenunti
       \end{itemize}
       \subsubsection{linked\_funstions.cpp}
-
+      datoteka ``linked\_funstions'' vsebuje funkcije za manipuliranje tako imenovanega ``povezanega lista'' predmetov in škatel in sicer:
+      \begin{itemize}
+        \item ``append\_new\_box'', ki na mesto za naslednjo škatlo v trenutni škatli ustvari novo škatlo
+        \item ``put\_object\_in\_box'', ki na konec predmetov v trenutni škatli ustvari nov predmet
+        \item ``go\_level\_down\_box'' in ``go\_level\_up\_box'', ki vrneta notranjo škatlo ali škatlo v kateri se trenutna nahaja
+      \end{itemize}
     \subsection{Potek programiranja}
+    Programiranje je bilo precej zahtevno in dolgotrajno, saj sem se moral med programiranjem veliko naučiti. Na koncu je programiranje trajalo probljižno 30ur.
       \subsubsection{Težave med programiranjem}
+      Med programiranjem sem pričakovano naletel na številne težave kot so denimo:
+      \begin{itemize}
+        \item napaka uporabe po sprostitvi (ang. use after free)\\ Ta se mi je najpogosteje zgodila v datoteki ``ui'' v funkcijah ``delete\_obj'' in ``delete\_box'', saj sem predmet ali škatlo že izbrisal, vendar pa sem njihov naslov še vodno imel shranjev v prejšnji škatli, kar je ob poskusu zapisa povezanega seznama v datoteko privedlo do omenjene napake
+        \item napaka naslavljanja praznega kazalnika (ang. accessinig NULL pointer)\\ Ta je bila prav tako pogosta pri funkcijah brisanja, vendar se je pojavljala tudi pri funkcijah ustvarjanja, saj se mi je dogajalo, da sem pozabljal dodeljevati naslove naslednjih elementov v vezanega seznama, kar je privedlo do te napake, saj sem poiskušal dostopati do nedodeljenega spomina
+        \item proglemi z indeksi\\ Ti so bili najbolj zagonetni v funkciji ``master\_switch'', na delu, kjer vrednost dodeljujem formatu predmeta in škatle, saj sem program pisal v zelo dolgem časovnem obdobju, kjer sem začel s prej omenjeno funkcijo in ob koncu programiranja naletel na izredno nenavadno napako, ki je imela izvor v slabo, in po pravici rečeno, neumno zapisanem delu kode, ki je v zanki spreminjal vrednost formata škatle na neveljavnem indeksu, kar pa ni vračalo napake, temveč je le pisalo slabe podatke v vrednosti formata škatle. Popravek je trajal skupno manj kot 5 minut, vendar pa je iskanje napake trajalo znatno dalj.
+        \item pozabljen ``break;''\\ Še ena napaka iz funkcije ``master\_switch'' je pozabljen ukaz ``break'' ali prekini, ki stikalu (ang. switch) pove naj neha izvajati nakaljne pogoje. Ta napaka mi je uhajala zelo dolgo časa, saj na prvi pogled ni imela velikega pomena, vendar jo je \textit{claude.com} hitro našel
+        \item neskončna rekurzija\\ Ta napaka se mi je pojavila v večini funkcij ki operacije delajo na rekurziven način predvsem funkcije ustvarjanja, pisanja v datoteko in pisanja na standardni izhod. Najhuje je bilo na začetku, saj takrat še nisem bil dobro seznanjen z delovanjem rekurzije, vendar sem jo proti koncu v funkcijah brisanja že precej doumel
+        \item problem širokega brisanja\\ Ta težava je povezana z funkcijo brisanja, ki sem jo zaradi neučakanosti prekopiral in samo nekoliko dopolnil kar iz funkcije ``print\_all\_box'', kar je prineslo posledice, saj ta funkcija izpiše tudi škatle, ki so neposredno zraven ciljne, funkcija brisanja pa naj bi izbrisala le ciljno. Napaka je logična, vendar je trajalo vsaj kakšno dobro uro jeze, da sem jo odpravil
+      \end{itemize}
+      To so le nekatere od napak, ki sem jih srečal na poti. Poleg teh sem jih najvrjetneje srečal še veliko, vendar pa menim, da so te dokar reprezentativne. Prav tako se bojim tudi, da jih v programu najvrjetneje še kar mrgoli, vendar pa v mojem testiranju novih nisem zaznal, je pa to očitno mesto, kjer je možna izboljšava.
   \section{Možne izboljšave}
-  \subsection{Kratkoročne}
-  \subsection{Dolgoročne}
+  \subsection{Grafika}
+  Že od začetka sem imel v mislih grafični umesnik s katerim bi lahko uporabnik veliko laže vnašal podatke in podatke tudi razbral, vendar je to nekoliko prevelik zalogaj, ki ga moram prepustiti za prihodnost. V načrtu je bil grafični umesnik, ki bi temeljil na ``\textit{OpenGL}'', saj mi je nekoliko poznan, bi pa se o njem želel še veliko naučiti.
+  \subsection{Dodatna funkcionalnost}
+  Trenutno stanje programa je sprejemljivo, saj lahko v njem opišemo skoraj vsako sobo, vendar pa je vpisovanje zamudno, še posebej če se nam pri vpisu pripeti napaka, zato bi bilo primerno implementirati sledeče ukaze:
+  \begin{itemize}
+    \item kopiranje in lepljenje\\ Ta ukaza bi omogočala hitrejše ustvarjanje predmetov, saj bi lahko uporabnik podvojil dan predmet ali škatlo v katerokoli drugo škatlo
+    \item preimenovanje in spreminjanje lastnosti\\ Ti ukazi bi v kombinaciji s prejšnjima še dodatno pohitrili ustvarjanje prostorov, saj bi lahko že obstoječe predmete in škatle le modificirali
+    \item premikanje\\ Ta ukaz ponovno pohitri celoten proces, saj izdelava predmeta ali škatle v napačni škatli ne pomeni več brisanja in ponovnega ustvarjanja
+  \end{itemize}
+  \subsection{Izboljšava učinkovitosti}
+  Program nedvomno ni brezhibno napisan, kar pa pomeni tudi da časovna in prostorska učinkovitost nista optimalni. To sicer ni tako problematično, saj je program napisan v C++, ki je sam po sebi hiter, vendar pa to ne pomeni, da tu ni prostora za izboljšave.
   \section{Zaključek}
   \newpage
   \section{Viri}
