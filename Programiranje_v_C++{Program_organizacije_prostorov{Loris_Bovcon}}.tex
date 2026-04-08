@@ -1,0 +1,328 @@
+\documentclass[12pt, a4paper, notitlepage]{article}
+\usepackage[utf8]{inputenc}
+
+%math
+\usepackage{amsmath, amssymb, amsthm}
+
+%graphics
+\usepackage{graphicx, float}
+\graphicspath{{images/}}
+
+%customisation
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm, heightrounded]{geometry}
+\usepackage{ragged2e}
+\renewcommand{\baselinestretch}{1.15}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\renewcommand{\figurename}{Slika}
+\renewcommand{\tablename}{Tabela}
+
+\usepackage[backend=biber,style=numeric]{biblatex}
+\addbibresource{Viri.bib}
+
+\renewcommand*\contentsname{Vsebina}
+\renewcommand{\listfigurename}{Kazalo slik}
+\renewcommand{\listtablename}{Kazalo tabel}
+
+\usepackage{fancyhdr}
+\setlength{\headheight}{15pt}
+\pagestyle{fancy}
+\fancyhf{}
+
+\fancyhead[L]{PROGRAMIRANJE C++}
+%\fancyhead[C]{Program organizacije prostorov}
+\fancyhead[R]{\textit{ \nouppercase{\leftmark}}}
+\fancyfoot[C]{\thepage}
+
+\fancypagestyle{plain}{ %
+  \fancyhf{} % remove everything
+  \renewcommand{\headrulewidth}{0pt} % remove lines as well
+  \renewcommand{\footrulewidth}{0pt}
+}
+
+\usepackage{datetime}
+
+%%%%%%%%%%%%%%%
+%% BEGINNING %%
+%%%%%%%%%%%%%%%
+
+\setcounter{page}{0}
+\author{Loris Bovcon}
+\begin{document}
+
+  \begin{titlepage}
+
+    \flushleft
+    Škofijska gimnazija Vipava\\
+    Goriška cesta 29\\
+    5271 Vipava
+    \vspace{1cm}
+
+    \begin{center}
+      \large
+      Seminarska naloga pri predmetu informatika\\
+      \rule{\textwidth}{1pt}
+      \vspace{0cm}
+
+      \Huge
+      \textbf{
+        PROGRAMIRANJE V C++\\
+      }
+      \Large
+      \vspace{0.5cm}
+      Program organizacije prostorov
+    \end{center}
+
+    \flushright
+    \vfill
+    Avtor: Loris Bovcon 4.b\\Mentor: Bogdan Urdih, prof.
+    \vspace{1cm}
+    \center
+    Ajdovščina, \the\day.\the\month.\the\year
+
+  \end{titlepage}
+
+  \newpage
+  \section{Povzetek}
+  V življenju se pogosto znajdemo v neredu. Pogosto se zgodi, da vemo da nekaj imamo, vendar ne vemo kje, kar je še posebno zagonetno v situacijah ko se nam mudi. V ta namen sem napisal program, ki hitro in učinkovito pomaga najti izgubljene predmete, ki so bili predhodno shranjeni.
+  
+  \newpage
+  \tableofcontents
+  \listoffigures
+  \listoftables
+  \newpage
+
+%%%%%%%%%%%%%%%%
+%%% CONTENTS %%%
+%%%%%%%%%%%%%%%%
+
+  \justifying
+  
+  %\begin{verbatim}
+  %\end{verbatim}
+  \section{Uvod}
+    \subsection{Teme}
+  Seminarska naloga zadeva naslednje teme:
+  \begin{enumerate}
+    \item Teoretični del z nekatirimi uporabljenimi strukturami
+    \item Delovanje programa na površinskem in tudi v globjem pogledu
+    \item Potek programiranja in težave, ki sem jih srečal na poti
+  \end{enumerate}
+  \subsection{Cilji}
+  Glavna cilja seminarske naloge sta sledeča:
+  \begin{enumerate}
+    \item narediti program, ki bi mi pomagal organizirati sobo in najti stvari, če pozabim kje so
+    \item utrditi predhodnje znanje C++ in pridobiti nova znanja na področju programiranja z kazalniki in vezanimi seznami
+  \end{enumerate}
+    \subsection{Uporabljena orodja}
+    Za dosego zastavljenih ciljev sem pri programiranju uporabil naslednja orodja:
+      \subsubsection{nvim}
+      nvim ali neovim je preprost urejevalnik besedil, ki je zaradi svoje preprostosti razpoložlivejši za razširitve. V pomoč pri pisanju kode mi je bila razširitev \textit{Conquer of Completion}\cite{coc}, ki avtomatsko dopolnjuje fraze določenega programskega jezika. Je torej samodejni ``dokončevalec'' (ang. autocomplete).
+      \subsubsection{gcc in mingw}
+      \textit{gcc} ali \textit{GNU compiler collection}\cite{gcc} in \textit{mingw}\cite{mingw} sta prevajalna programa, ki iz C/C++ človeško-razumljive kode program pretvorita v računalniku-razumljivo strojno kodo. Večino časa sem za sprotno prevajanje in preverjanje uporabljel gcc, saj je po mojem mnenju najboljša izbira za GNU/Linux operacijski sistem. Proti koncu izdelovanja programa sem program prevedel še v strojno kodo namenjeno za operacijski sistem Windows z \textit{mingw}, da je s tem program dostopnejši.
+      \subsubsection{spletna orodja}
+      Med programiranjem sem uporabil tudi številna spletna orodja, kot denimo:
+      \begin{itemize}
+        \item \textit{OnlineGDB}\cite{onlinegdb}, ki mi je služil kot pomoč pri iskanju težav pri zagonetnejših problemih
+        \item \textit{claude}\cite{claude}, ki je umetna inteligenca s posebnim fokusom na programiranje. Pomagal mi je pri problemih prezahtevnih celo za \textit{OnlineGDB}, sicer ni nobenega problema (razen enega z klicom ``break'') rešil sam,vendar pa me je nekajkrat usmeril v provo smer.
+      \end{itemize}
+  \section{Naprednejši elementi uporabljeni pri programiranju}
+    \subsection{Strukture}
+      ``Trda'' definicija strukture, kot je najdena v knjigi \textit{The C++ Programming Language}\cite{cpplang} je sledeča: Struktura je sekvenca elementov (članov) poljubnega podatkovnega tipa. To nam ne pove prav veliko, zato si poglejmo praktični primer.\\
+      Med programiranjem sem med drugim upeljal tudi strukturo predmeta ``obj'':
+      \begin{verbatim}
+struct obj{                   //ime strukture
+  char name[64] = "";         //niz znakov ime dolžine 64
+  char description[127] = ""; //niz znakov opis dolžine 127
+  float location[3] = { 0 };  //niz treh decimalnih števil
+  struct obj* next = NULL;    //kazalnik na naslednji predmet v vezanem seznamu
+  struct box* prev = NULL;    //kazalnik na škatlo v kateri se predmet nahaja
+};
+      \end{verbatim}
+      %Struktura predmeta je tako struktura sestavljena iz elementov:
+      %\begin{itemize}
+      %  \item niz znakov dolžine 64 ``name'',
+      %  \item niz znakov dolžine 127 ``description'',
+      %  \item niz števil z vejico dolžine 127 ``location'',
+      %  \item kazalnik na naslednjo strukturo predmeta,
+      %  \item kazalnik na prejšnjo škatlo
+      %\end{itemize}
+      Z uporabo struktur je tako olajšano nastavljanje spremenljivk, saj imajo te točno določeno ime v povezavi s strukturo. Poleg tega pa strukture omogočajo še implementacijo vezanih seznamov (\ref{vezani_seznam}).
+    \subsection{Vezani seznam (ang. linked list)} \label{vezani_seznam}
+    Vezani seznam oziroma \textit{linked list} v angleščini je struktura za shranjevanje elementov in posledično podatkov na ne-končen način. Podoben način shranjevanja elementov je tudi niz struktur, ki strukture shranjuje eno neposredno ob drugi, v seznamu z v-naprej določeno dolžino. Delo z nizi je precej lažje, saj so vsi elementi že narejeni in na v-naprej določenih, lahko dostopnih mestih, kar ne drži za vezane sezname, ki ima ob začetku le en element, na katerega se skozi program vežejo novi , ki jih je potrebno sproti ustvarjati\cite{linked_list}. Spomin je elementom na vezanem seznamu dodeljen dinamično, kar pomeni, da lahko elemente ustvarjamo po želji, kar pa za nize ne velja, saj imajo končno dolžin in bi bili za ta program iz tega razloba neprimerni.\\
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=14.5cm]{diagram.png}
+    \caption{Diagram možnih povezav med predmeti in škatlami\cite{diagram}}
+    \label{fig:diagram}
+  \end{figure}
+    Primer uporabe vezanega seznama iz mojega programa bi bila denimo naslednja funkcija, ki začetni škatli ``first'' na mesto zadnjega predmeta pripne novega:
+    \begin{verbatim}
+obj *put_object_in_box(struct box *current){
+  if (current == NULL) {
+    return NULL;
+  }
+  if (current->first == NULL) {
+    current->first = new obj();
+    current->first->prev = current;
+    return current->first;
+  }
+  obj *temp = current->first;
+  while (temp->next != NULL) {
+    temp = temp->next;
+  }
+  temp->next = new obj();
+  temp->next->prev = current;
+  return temp->next;
+}
+    \end{verbatim}
+    V tej funkciji zaznamo tudi posebnost moje implementacije vezanega seznama, saj ima vsak predmet in škatla poleg kazalnika na naslednji element tudi kazalnik na ``prejšnjega'', ki pa ne kaže na prejšnji element, temveč na škatlo v kateri se nahaja, kar mi omogoča lažjo implementacijo premikanja uporabnika iz dane škatle v prejšnjo.
+    \subsubsection{Časovna zahtevnost vezanega seznama}
+    V primerjavi z nizi vezani seznam ni le implementacijsko zahtevnejši, temveč tudi časovno. Poglejmo si naslednjo primerjavo med nizi, klasično implementacijo vezanega seznama in mojo implementacijo:
+    \begin{table}[h!]
+    \begin{center}
+      %\addcontentsline{lot}{table}{Tabela časovne zahtevnosti}
+      \begin{tabular}{ |c|c|c|c| }
+        Operacija & Niz & Konvencionalna implementacija & Moja implementacija\\
+        Vstavitev elementa na konec & O(1) & O(n) & O(n)\\
+        Iskanje po seznamu & O(n) & O(n) & O(n)\\
+        Premik na prejšnji element & O(1) & O(n) &O(1)
+      \end{tabular}
+      \caption{Primerjava časovne zahtevnosti\cite{timecomp_linked_list}}
+    \end{center}
+    \end{table}
+    \\Vidimo, da je vezni seznam časovno zahtevnejši od niza, v primerjavi z konvencionalno implementacijo pa je moja boljša v premikanju na prejšnje elemente.
+  \section{Programiranje}
+    \subsection{Obrazložitev programa}
+    Za lažjo delo sem program razdelil na tako imenovano ``glavno datoteko'', datoteko ``main'' in 3 dodatne datoteke z različnimi funkcijami. V nadaljevanju bom obrazložil delovanje programa najprej z vidika datoteke ``main'', kar predstavlja površinski pogled v delovanje programa, kasneje pa še vsako od funkcij iz vsake datoteke posebej.
+      \subsubsection{config.h}
+      datoteka ``config.h'' je ``glavna dototeka'', ki se uporablja za konsistenco definicij med različnimi datotekami\cite{cpplang}.\\ ``Glavno datoteko'' sem uporabil v naslednje namene:
+      \begin{enumerate}
+        \item definicija konstant, kot so: barve, ``razločevalci'' in daljša besedila,
+        \item globalna definicija funkcij, ki jim v drugih datotekah priredim kodo, 
+        \item globalna definicija struktur škatle in predmeta.
+      \end{enumerate}
+      \subsubsection{main.cpp}
+      Datoteka ``main'' je glavna datoteka, v kateri so definirane globalne spremenljivke, ki se uporabljajo čez celoten program. Dodatno v datoteki ``main'' živi tudi glavna, istoimenska funkcija, iz katere se kličejo vse nadaljne, in, ki program zaključi. Poleg glavne funkcije se v tej datoteki nahaja še funkcija ``action\_switch'', ki, ko jo glavna funkcija pokliče, na podlagi uporabniškega vnosa požene pravo funkcijo za nadaljevanje programa in izvedbo želenega ukaza.
+
+      Program se iz vidika datoteke ``main'' izvaja po sledečem vrstnem redu:\\
+      \begin{enumerate}
+        \item dodeljen je spomin za globalne spremenljivke
+        \item začne se funkcija ``main''
+        \item program uporabnika vpraša za vnos ukaza, ki je le prva vpisana črka, iz seznama:
+          \begin{itemize}
+            \item d za ``delete'' oziroma izbriši
+            \item f za ``file'', ki uporabnika povpraša po imenu datoteke, ki naj se odpre
+            \item h za ``help'' oziroma pomoč, ki izpiše seznam ukazov in definicije
+            \item l za ``list'' oziroma naštej, ki, v primeru da je druga črka `a' izpiše atribute podanega predmeta ali škatle, v primeru da je druga črka `s' našteje vse predmete in škatle znotraj ali ob trenutni škatli, ter v primeru da druga črka ni nič od naštetega izpiše vse škatle in predmete v trenutni škatli
+            \item m za ``move'' oziroma premakni, ki spremeni trenutno škatlo v tisto podano po 3. mestu uporabniškega vhoda, kjer je ukaz ``mb'' rezerviran za premik nazaj v prejšnjo škatlo
+            \item n za ``new'' oziroma nov, ki v trenutni škatli, če je drugi znak vhoda `o' ustvari nov predmet, če pa ne pa novo škatlo
+            \item s za ``search'', ki po trenutni škatli išče in izpiše predmete ali škatle z imenom ki se začne na niz podan po 2. znaku ukaza.
+          \end{itemize}
+        \item uporabnik izbere datoteko(drugega, razen izhoda, ne more, saj ni naložena še nobena datoteka)
+        \item datoteka se prebere in v spomin se naloži vezani seznam škatel in predmetov
+        \item uporabnik lahko zdaj dodaja nove, jih birše, išče... 
+        \item ko je uporabnik zadovoljen samo izvede ukaz `q', ki škatle in predmete iz vezanega seznama shrani na isto datoteko, pri čemer izbriše prejšnje podatke, in program se zaključi
+      \end{enumerate}
+      \subsubsection{r\_w.cpp}
+      Datoteka ``r\_w'' vsebuje funkcije za delo z datotekami in sicer:
+      \begin{itemize}
+        \item ``makefile'', ki prejme ime in preveri, da datoteka s tem imenom obstaja, če ne, jo naredi in vanjo vpiše osnovno strukturo datoteke (škatlo ``main'' v kateri živijo vse druge)
+        \item ``writefile'', ki v predhodno odprto datoteko vpiše strukturo s pomočjo funkcije ``all\_box\_to\_file''
+        \item ``readfile'', ki požene branje datoteke s pomočjo funkcije ``master\_switch''
+        \item ``obj\_to\_file'' in ``box\_to\_file'', ki v datoteko vpišesta po en predmet in škatlo
+        \item ``all\_box\_to\_file'', ki z uporabo prejšnjih dveh funkcij v datoteko rekurzivno zapiše vse povezane škatle in predmete
+        \item ``print\_obj'' in ``print\_box'', ki izpišesta lastnosti predmeta in škatle
+        \item ``print\_all\_box'', ki rekurzivno izpiše vse povezane škatle in predmete na standardni izhod
+        \item ``get\_description'', ki iz vrstice z opisom predmeta ali škatle izlušči opis
+        \item ``get\_sep\_spacing'', ki na podana naslova zapiše število znakov do dveh zaporednih pojavitev podanega znaka v vrstici
+        \item ``get\_new\_line'', ki izbriše staro vsebino vrstice in na njen naslov iz datoteke zapiše novo
+        \item ``insert\_corners'', ki na naslov ``ogljišč'' iz datoteke vpiše tri decimalna števila
+        \item ``master\_switch'', ki na podlagi prvega znaka v vrstici nadzira katere funkcije se bodo izvedle, s čimer omogoči, da se preberejo različne strukture
+      \end{itemize}
+      \subsubsection{ui.cpp}
+      datoteka ``ui'' vsebuje funkcije povezane z uporabniškim umesnikom in ukazi, ki jih uporabnik lahko izvede. Funkcije so sledeče:
+      \begin{itemize}
+        \item ``delete\_box'', ki rekurzivno izbriše podano škatlo, njene predmete in vse njene podškatle
+        \item ``delete\_with\_name'', ki na podlagi imena podanega poleg ukaza `d' izbriše škatlo, oziroma, če ta ninajdena, predmet, s podanim imenom
+        \item ``pritn\_path\_b'', ki rekurzivno izpiše pot do, s kazalnikom, podane škatle
+        \item ``print\_path\_o'', ki izpiše pot do predmeta pri čemer uporabi prejšnjo funkcijo za zapis poti škatel
+        \item ``print\_searched\_under'', ki na podlagi imen izpiše poti do vseh predmetov in škatel, katerih ime se začne z podanim nizom znakov
+        \item ``print\_stats\_o'' in ``print\_stats\_b'', ki izpišeta atribute predmeta in škatle
+        \item ``print\_atributes'', ki s pomočjo prejšnjih dveh funkcij izpiše atribute predmeta ali škatle z podanim imenom
+        \item ``print\_names'', ki izpiše imena predmetov in škatel v trenutni škatli
+        \item ``new\_object'' in ``new\_box'', ki uporabnika povprašata po podatkih in iz njih ustvarita nov predmet ali novo škatlo v trenunti
+      \end{itemize}
+      \subsubsection{linked\_funstions.cpp}
+      datoteka ``linked\_funstions'' vsebuje funkcije za delo z vezanim seznamom predmetov in škatel in sicer:
+      \begin{itemize}
+        \item ``append\_new\_box'', ki na naslednjem prostem mestu za naslednjo škatlo v trenutni škatli ustvari novo škatlo
+        \item ``put\_object\_in\_box'', ki na konec predmetov v trenutni škatli ustvari nov predmet
+        \item ``go\_level\_down\_box'' in ``go\_level\_up\_box'', ki vrneta notranjo škatlo ali škatlo v kateri se trenutna nahaja
+      \end{itemize}
+    \subsection{Potek programiranja}
+    Programiranje je bilo precej zahtevno in dolgotrajno, saj sem se moral med programiranjem veliko naučiti. Na koncu je programiranje trajalo probljižno 30ur.
+      \subsubsection{Težave med programiranjem}
+      Med programiranjem sem pričakovano naletel na številne težave kot so denimo:
+      \begin{itemize}
+        \item napaka uporabe po sprostitvi (ang. use after free)\\ Ta se mi je najpogosteje zgodila v datoteki ``ui'' v funkcijah ``delete\_obj'' in ``delete\_box'', saj sem predmet ali škatlo že izbrisal, vendar pa sem njihov naslov še vodno imel shranjev v prejšnji škatli, kar je ob poskusu zapisa vezanega seznama v datoteko privedlo do omenjene napake
+        \item napaka naslavljanja praznega kazalnika (ang. accessinig NULL pointer)\\ Ta je bila prav tako pogosta pri funkcijah brisanja, vendar se je pojavljala tudi pri funkcijah ustvarjanja, saj se mi je dogajalo, da sem pozabljal dodeljevati naslove naslednjih elementov v vezanega seznama, kar je privedlo do te napake, saj sem poiskušal dostopati do nedodeljenega spomina
+        \item problemi z indeksi\\ Ti so bili najbolj zagonetni v funkciji ``master\_switch'', na delu, kjer škatli dodeljujem vrednost formata. Eden od fakorjev, ki je pripomogel k težavnosti najdbe tega problema je bilo dolgo časovno ondobje pisanja programa, kar je pomenilo, da sem ob koncu pisanja že pozabil točno implementacijo nekaterih funkcij. Del programa s problemom je bil eden prvih ki sem jih napisal, zato je bila čudna napaka ob izvajanju programa na koncu pisanja še toliko bolj nenavadna. Na koncu sem ugodovil, da je imela napaka izvor v slabo, in po pravici rečeno, neumno zapisanem delu kode, ki je v zanki spreminjal vrednost formata škatle na neveljavnem indeksu, kar pa ni vračalo napake, temveč je le pisalo slabe podatke v vrednosti formata škatle. Popravek je trajal skupno manj kot 5 minut, vendar pa je iskanje napake trajalo znatno dalj.
+        \item pozabljen ``break;''\\ Še ena napaka iz funkcije ``master\_switch'' je pozabljen ukaz ``break'' ali prekini, ki stikalu (ang. switch) pove naj neha izvajati nadaljnje pogoje. Ta napaka mi je uhajala zelo dolgo časa, saj na prvi pogled ni imela velikega pomena, vendar jo je \textit{claude} hitro našel
+        \item neskončna rekurzija\\ Ta napaka se mi je pojavila v večini funkcij ki operacije delajo na rekurziven način predvsem funkcije ustvarjanja, pisanja v datoteko in pisanja na standardni izhod. Najhuje je bilo na začetku, saj takrat še nisem bil dobro seznanjen z delovanjem rekurzije, vendar sem jo proti koncu v funkcijah brisanja že precej doumel
+        \item problem širokega brisanja\\ Ta težava je povezana z funkcijo brisanja, ki sem jo zaradi neučakanosti prekopiral in samo nekoliko dopolnil kar iz funkcije ``print\_all\_box'', kar je prineslo posledice, saj ta funkcija izpiše tudi škatle, ki so neposredno zraven ciljne, funkcija brisanja pa naj bi izbrisala le ciljno. Napaka je logična, vendar je trajalo vsaj kakšno dobro uro jeze, da sem jo odpravil
+      \end{itemize}
+      To so le nekatere od napak, ki sem jih srečal na poti. Poleg teh sem jih najvrjetneje srečal še veliko, vendar pa menim, da so te dokaj reprezentativne. Prav tako se bojim tudi, da jih v programu najvrjetneje še kar mrgoli, vendar pa v mojem testiranju novih nisem zaznal, je pa to očitno mesto, kjer je možna izboljšava.
+  \section{Možne izboljšave}
+  \subsection{Grafika}
+  Že od začetka sem imel v mislih grafični umesnik s katerim bi lahko uporabnik veliko laže vnašal podatke in podatke tudi razbral, vendar je to nekoliko prevelik zalogaj, ki ga moram prepustiti za prihodnost. V načrtu je bil grafični umesnik, ki bi temeljil na ``\textit{OpenGL}'', saj mi je nekoliko poznan, bi pa se o njem želel še veliko naučiti.
+  \subsection{Dodatna funkcionalnost}
+  Trenutno stanje programa je sprejemljivo, saj lahko v njem opišemo skoraj vsako sobo, vendar pa je vpisovanje zamudno, še posebej če se nam pri vpisu pripeti napaka, zato bi bilo primerno implementirati sledeče ukaze:
+  \begin{itemize}
+    \item kopiranje in lepljenje\\ Ta ukaza bi omogočala hitrejše ustvarjanje predmetov, saj bi lahko uporabnik podvojil dan predmet ali škatlo v katerokoli drugo škatlo
+    \item preimenovanje in spreminjanje lastnosti\\ Ti ukazi bi v kombinaciji s prejšnjima še dodatno pohitrili ustvarjanje prostorov, saj bi lahko že obstoječe predmete in škatle le modificirali
+    \item premikanje\\ Ta ukaz ponovno pohitri celoten proces, saj izdelava predmeta ali škatle v napačni škatli ne pomeni več brisanja in ponovnega ustvarjanja
+  \end{itemize}
+  \subsection{Izboljšava učinkovitosti}
+  Program nedvomno ni brezhibno napisan, kar pa pomeni tudi da časovna in prostorska učinkovitost nista optimalni. To sicer ni tako problematično, saj je program napisan v C++, ki je sam po sebi hiter, vendar pa to ne pomeni, da tu ni prostora za izboljšave.
+  \section{Primerjava}
+  Proti koncu seminarske naloge bi rad ispostavil še nekaj programov, ki so v nekolikšnji meri podobni mojemu; in sicer:
+  \begin{itemize}
+    \item Upravljalnik datotek\\ Ti so v principu zelo podobni mojemu programu, saj, podobno kot moj program, temeljijo na ``škatlah'' oziroma mapah in ``predmetih'' oziroma datotekah. Ta podobnost je v resnici zelo velika, le da je moj program bolj osredotočen na pomen predmetov in škatel (njihov opis, lokacijo v prejšnji škatli...), kot navaden upravljalnik datotek.
+    \item Programi 3D modeliranja\\ Tej vrsti programov moj na prvi pogled ni ravno podoben, vendar pa lahko podobnost zaznamo v strukturi predmetov, saj imajo ti kordinate, škatle pa imajo poleg lokacije še velikost in ogljišča. Tudi v prihodnosti razvoja programa bi se le-ta pomikal bolj proti programu 3D modeliranja, še posebno z uvedbo grafike.
+  \end{itemize}
+  \section{Zaključek}
+  Skupno vidimo, da smo izpolnili zadana cilja, predvsem drugega v povezavi z učenje programskega jezika, programiranja in programskih struktur, kot so strukture in vezani listi. Program je funkcionalen, vendar je v njem še veliko prostora za izboljšave, ki sem jih bom motivirano lotil.
+  \newpage
+  \section{Viri}
+  \printbibliography[heading=none]
+
+\end{document}
+
+
+
+  %test text
+  %\subsection{math}
+  %test inline $F=ma$
+
+  %test $\sum F = F_a + F_b$
+
+  %\begin{equation}
+  %W_p = \frac{1}{2} k s^2
+  %\end{equation}
+  %\newpage
+
+
+
+  %\subsection{aj dont now}
+
+
+
+  %\begin{figure}[H]
+  %  \centering
+  %  \includegraphics[width=10cm]{test_img.png}
+  %  \caption{test}
+  %  \label{fih:my_label}
+  %\end{figure}

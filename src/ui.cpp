@@ -169,13 +169,13 @@ void print_stats_b(box* current){
     return;
   }
   printf(YELLOW "Upper box:" MAGENTA " %s", current->prev->name);
-  printf(YELLOW "\nRelative location in previous box:\n" MAGENTA "x: %f, y: %f, z: %f", current->location[0], current->location[1], current->location[2]);
+  printf(YELLOW "\nRelative location in previous box:\n" MAGENTA "x: %.2f, y: %.2f, z: %.2f", current->location[0], current->location[1], current->location[2]);
   printf(YELLOW "\nDescription:" MAGENTA " %s", current->description);
   printf(YELLOW "Box format:" MAGENTA " %c", current->box_format);
   printf(YELLOW "\nCorners:\n" MAGENTA);
   for (int i = 0; i < 128 && current->corners[i][0] != '\0'; i++) {
     for (int j = 0; j < 3 && current->corners[i][j] != '\0'; j++){
-      printf("%f", current->corners[i][j]);
+      printf("%.2f", current->corners[i][j]);
       if (j != 2)
         printf(", ");
     }
@@ -190,7 +190,7 @@ void print_stats_o(obj* current){
     return;
   }
   printf(YELLOW "Upper box:" CYAN " %s", current->prev->name);
-  printf(YELLOW "\nRelative location in previous box:" CYAN "\nx: %f, y: %f, z: %f", current->location[0], current->location[1], current->location[2]);
+  printf(YELLOW "\nRelative location in previous box:" CYAN "\nx: %.2f, y: %.2f, z: %.2f", current->location[0], current->location[1], current->location[2]);
   printf(YELLOW "\nDescription:" CYAN " %s" RESET, current->description);
 }
 
@@ -332,7 +332,7 @@ void new_box(box* current){
   }
 
 
-  printf(YELLOW "Start entering corners (max 127, when done set x-coordinate to -1): " RESET);
+  printf(YELLOW "Start entering corners (max 127, when done set x-coordinate to -1):\n" RESET);
   int i;
   float temp_float;
   for (i = 0; i < 128; i++){
@@ -342,11 +342,13 @@ void new_box(box* current){
     if (temp_float == -1.0) {
       break;
     }
-    temp->corners[i][0] = temp_float;
+    temp->corners[i][0] = temp_float + 0.000001;
     printf(MAGENTA "y-coordinate: " RESET);
-    scanf("%f", &temp->corners[i][1]);
+    scanf("%f", &temp_float);
+    temp->corners[i][1] = temp_float + 0.000001;
     printf(MAGENTA "z-coordinate: " RESET);
-    scanf("%f", &temp->corners[i][2]);
+    scanf("%f", &temp_float);
+    temp->corners[i][2] = temp_float + 0.000001;
   }
 
   return;
